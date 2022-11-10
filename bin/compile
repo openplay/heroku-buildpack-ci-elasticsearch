@@ -34,7 +34,7 @@ mkdir -p $CACHE_DIR
 if [ ! -d $CACHE_DIR/elasticsearch-$VERSION ]; then
 	echo "Fetching and installing elasticsearch" | indent
 	cd $CACHE_DIR
-	curl -sOL "https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/$VERSION/elasticsearch-$VERSION.tar.gz"
+	curl -sOL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-$VERSION.tar.gz"
 	tar zxf "elasticsearch-$VERSION.tar.gz"
 	cd "elasticsearch-$VERSION"
 	cp -r $CACHE_DIR/elasticsearch-$VERSION/* $INSTALL_DIR/
@@ -51,7 +51,7 @@ source $BUILD_DIR/.profile.d/jvmcommon.sh
 
 if [ ! -f /tmp/es.pid ]; then
   echo "# Starting ElasticSearch..."
-  env -u JAVA_TOOL_OPTIONS elasticsearch -d -p /tmp/es.pid
+  env -u JAVA_TOOL_OPTIONS -u JAVA_OPTS elasticsearch -d -p /tmp/es.pid
 fi
 EOF
 
