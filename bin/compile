@@ -38,16 +38,31 @@ else
   cp -r $CACHE_DIR/elasticsearch-$VERSION/* $INSTALL_DIR/
 fi
 
+# FIXME: Every time we tried to run any version of ES7 on Heroku CI, with or
+# without Heroku's JDK installed, it would hang at the end of test-setup and
+# never start running the tests. Cancelling the test run would then start the
+# starts (probably due to sending a kill signal to whatever test-setup was stuck
+# on), but then ultimately terminate them shortly after. We weren't able to
+# replicate this using ci:debug. This behavior doesn't happen w/ ES6.
+#
+# Ultimately we found we could start ES later, at the beginning of our tests,
+# after test-setup had completed, rather than here and it would work. So for now
+# this buildpack doesn't start ES but leaves it up to you start ES later before
+# you run your tests.
+#
+# It would be nice to fix this and not have to do something extra to start ES
+# later.
 cat <<EOF >> $PROFILE_PATH
 export PATH=/app/.heroku/vendor/elasticsearch/bin:\$PATH
 export ELASTICSEARCH_URL=http://localhost:9200
 export ES_JAVA_OPTS="-Xms2g -Xmx2g -Dfile.encoding=UTF-8"
 
-if [ ! -f /tmp/es.pid ]; then
-  echo "# Starting ElasticSearch..."
-  ( elasticsearch -E xpack.security.enabled=false -d -p /tmp/es.pid & )
+# FIXME: See notes in buildpack
+# if [ ! -f /tmp/es.pid ]; then
+#   echo "# Starting ElasticSearch..."
+#   elasticsearch -E xpack.security.enabled=false -d -p /tmp/es.pid
 
-  echo "# Waiting for Elasticsearch cluster to go to green..."
-  curl -o /dev/null --retry-delay 3 --retry 200 --retry-connrefuse --max-time 60 -s "http://localhost:9200/_cluster/health?wait_for_status=green&timeout=50s"
-fi
+#   echo "# Waiting for Elasticsearch cluster to go to green..."
+#   curl -o /dev/null --retry-delay 3 --retry 200 --retry-connrefuse --max-time 60 -s "http://localhost:9200/_cluster/health?wait_for_status=green&timeout=50s"
+# fi
 EOF
