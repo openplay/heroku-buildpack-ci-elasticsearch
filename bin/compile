@@ -16,18 +16,18 @@ mkdir -p $INSTALL_DIR
 mkdir -p $(dirname $PROFILE_PATH)
 mkdir -p $CACHE_DIR
 
-echo "Search in cache directory $CACHE_DIR/elasticsearch-$VERSION" | indent
+echo "        Search in cache directory $CACHE_DIR/elasticsearch-$VERSION"
 
 if [ ! -d $CACHE_DIR/elasticsearch-$VERSION ]; then
-	echo "Fetching and installing Elasticsearch 7+" | indent
-	cd $CACHE_DIR
-	curl -sOL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-$VERSION-$ARCH.tar.gz"
-	tar zxf "elasticsearch-$VERSION-$ARCH.tar.gz"
-	cd "elasticsearch-$VERSION"
-	cp -r $CACHE_DIR/elasticsearch-$VERSION/* $INSTALL_DIR/
+  echo "        Fetching and installing Elasticsearch 7+"
+  cd $CACHE_DIR
+  curl -sOL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-$VERSION-$ARCH.tar.gz"
+  tar zxf "elasticsearch-$VERSION-$ARCH.tar.gz"
+  cd "elasticsearch-$VERSION"
+  cp -r $CACHE_DIR/elasticsearch-$VERSION/* $INSTALL_DIR/
 else
-	echo "Installing elasticsearch from cache" | indent
-	cp -r $CACHE_DIR/elasticsearch-$VERSION/*  $INSTALL_DIR/
+  echo "        Installing elasticsearch from cache"
+  cp -r $CACHE_DIR/elasticsearch-$VERSION/* $INSTALL_DIR/
 fi
 
 cat <<EOF >> $PROFILE_PATH
