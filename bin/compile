@@ -14,10 +14,9 @@ ENV_DIR=$3
 source $BP_DIR/lib/common.sh
 source <(curl -s --retry 3 -L $BUILDPACK_STDLIB_URL)
 
-# export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
-export_env $ENV_DIR "." "JAVA_OPTS"
+export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
-install_jdk ${BUILD_DIR}
+install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
 
 indent() {
   sed -u 's/^/       /'
@@ -32,10 +31,12 @@ mkdir -p $INSTALL_DIR
 mkdir -p $(dirname $PROFILE_PATH)
 mkdir -p $CACHE_DIR
 
+echo "Search in cache directory $CACHE_DIR/elasticsearch-$VERSION" | indent
+
 if [ ! -d $CACHE_DIR/elasticsearch-$VERSION ]; then
 	echo "Fetching and installing elasticsearch" | indent
 	cd $CACHE_DIR
-	curl -OL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-$VERSION-$ARCH.tar.gz"
+	curl -sOL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-$VERSION-$ARCH.tar.gz"
 	tar zxf "elasticsearch-$VERSION-$ARCH.tar.gz"
 	cd "elasticsearch-$VERSION"
 	cp -r $CACHE_DIR/elasticsearch-$VERSION/* $INSTALL_DIR/
@@ -52,7 +53,7 @@ source $BUILD_DIR/.profile.d/jvmcommon.sh
 
 if [ ! -f /tmp/es.pid ]; then
   echo "# Starting ElasticSearch..."
-  env -u JAVA_TOOL_OPTIONS -u JAVA_OPTS elasticsearch -d -p /tmp/es.pid
+  elasticsearch -d -p /tmp/es.pid
 fi
 EOF
 
