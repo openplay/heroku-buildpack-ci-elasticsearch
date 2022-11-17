@@ -14,7 +14,7 @@ indent() {
   sed -u 's/^/       /'
 }
 
-VERSION=${ELASTICSEARCH_VERSION-"7.17.7"}
+VERSION=${ELASTICSEARCH_VERSION-"7.10.2"}
 ARCH=${ELASTICSEARCH_ARCH-"linux-x86_64"}
 
 INSTALL_DIR="$BUILD_DIR/.heroku/vendor/elasticsearch"
