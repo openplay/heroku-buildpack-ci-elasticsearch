@@ -14,7 +14,7 @@ indent() {
   sed -u 's/^/       /'
 }
 
-VERSION=${ELASTICSEARCH_VERSION-"7.10.2"}
+VERSION=${ELASTICSEARCH_VERSION-"8.19.10"}
 ARCH=${ELASTICSEARCH_ARCH-"linux-x86_64"}
 
 INSTALL_DIR="$BUILD_DIR/.heroku/vendor/elasticsearch"
@@ -27,7 +27,7 @@ mkdir -p $CACHE_DIR
 echo "Search in cache directory $CACHE_DIR/elasticsearch-$VERSION" | indent
 
 if [ ! -d $CACHE_DIR/elasticsearch-$VERSION ]; then
-  echo "Fetching and installing Elasticsearch 7+" | indent
+  echo "Fetching and installing Elasticsearch 8+" | indent
   cd $CACHE_DIR
   curl -sOL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-$VERSION-$ARCH.tar.gz"
   tar zxf "elasticsearch-$VERSION-$ARCH.tar.gz"
